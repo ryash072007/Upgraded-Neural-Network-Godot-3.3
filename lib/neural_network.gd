@@ -20,6 +20,11 @@ var learning_rate: float
 var activation_function: FuncRef
 var activation_dfunction: FuncRef
 
+var fitness: float = 0.0
+
+var color: Color = Color(-1, -1, -1)
+
+var raycasts: Array
 
 func _init(_input_nodes: int, _hidden_nodes: int, _output_nodes: int) -> void:
 	randomize()
@@ -35,6 +40,7 @@ func _init(_input_nodes: int, _hidden_nodes: int, _output_nodes: int) -> void:
 	
 	set_learning_rate()
 	set_activation_function()
+	set_random_color()
 
 static func getClass():
 	return load("res://lib/neural_network.gd")
@@ -104,6 +110,10 @@ static func reproduce(a: NeuralNetwork, b: NeuralNetwork) -> NeuralNetwork:
 	result.weights_hidden_output = Matrix.random(a.weights_hidden_output, b.weights_hidden_output)
 	result.bias_hidden = Matrix.random(a.bias_hidden, b.bias_hidden)
 	result.bias_output = Matrix.random(a.bias_output, b.bias_output)
+	
+	result.color.r = (a.color.r + b.color.r) / 2
+	result.color.g = (a.color.g + b.color.g) / 2
+	result.color.b = (a.color.b + b.color.b) / 2
 
 	return result
 
@@ -113,6 +123,7 @@ static func mutate(nn: NeuralNetwork, callback: FuncRef = funcref(getClass(), "m
 	result.weights_hidden_output = Matrix.map(nn.weights_hidden_output, callback)
 	result.bias_hidden = Matrix.map(nn.bias_hidden, callback)
 	result.bias_output = Matrix.map(nn.bias_output, callback)
+	result.color = Color(rand_range(0, 1), rand_range(0, 1), rand_range(0, 1))
 	return result
 
 static func copy(nn : NeuralNetwork) -> NeuralNetwork:
@@ -121,6 +132,7 @@ static func copy(nn : NeuralNetwork) -> NeuralNetwork:
 	result.weights_hidden_output = Matrix.copy(nn.weights_hidden_output)
 	result.bias_hidden = Matrix.copy(nn.bias_hidden)
 	result.bias_output = Matrix.copy(nn.bias_output)
+	result.color = nn.color
 	return result
 
 static func mutate_funcref(value, _row, _col):
@@ -128,3 +140,37 @@ static func mutate_funcref(value, _row, _col):
 		value += rand_range(-0.5, 0.5)
 		
 	return value
+
+func set_raycasts(_raycasts: Array):
+	raycasts = _raycasts
+
+func get_inputs_from_raycasts() -> Array:
+	
+	var _input_array: Array
+	
+	for ray in raycasts:
+		_input_array.push_front(get_distance(ray))
+	
+	return _input_array
+
+func get_prediction_from_raycasts(optional_val: Array) -> Array:
+	var _array_ = get_inputs_from_raycasts()
+	if optional_val: _array_.append_array(optional_val)
+	return predict(_array_)
+
+func get_distance(_raycast: RayCast2D):
+	var distance: float = 1.0
+	if _raycast.is_colliding():
+		var raycast_length: float = _raycast.cast_to.y
+		var origin: Vector2 = _raycast.global_transform.get_origin()
+		var collision: Vector2 = _raycast.get_collision_point()
+		distance = origin.distance_to(collision) / raycast_length
+
+	return distance
+
+func set_color(_color: Color):
+	color = _color
+
+func set_random_color():
+	if color == Color(-1, -1, -1):
+		color = Color(rand_range(0, 1), rand_range(0, 1), rand_range(0, 1))
