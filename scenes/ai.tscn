@@ -47,3 +47,11 @@ cast_to = Vector2( 0, 1000 )
 [node name="raycast8" type="RayCast2D" parent="Raycasts"]
 rotation = 5.49778
 cast_to = Vector2( 0, 1000 )
+
+[node name="collision_area" type="Area2D" parent="."]
+
+[node name="collision_shape" type="CollisionPolygon2D" parent="collision_area"]
+scale = Vector2( 1.0873, 1.09975 )
+polygon = PoolVector2Array( 128, 0.00115814, 59.3813, -118.115, -77.7489, -118.313, -146.116, -0.119463, -77.8761, 118.442, 58.9677, 118.49 )
+
+[connection signal="body_entered" from="collision_area" to="." method="_on_collision_area_body_entered"]

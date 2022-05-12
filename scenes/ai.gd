@@ -22,3 +22,12 @@ func react_to_input():
 	
 func _physics_process(_delta: float) -> void:
 	react_to_input()
+#	print(nn.get_inputs_from_raycasts())
+
+func add_fitness(value: float):
+	nn.fitness += value
+
+
+func _on_collision_area_body_entered(body: Node) -> void:
+	if body is TileMap:
+		call_deferred("kill")

@@ -21,9 +21,7 @@ var activation_function: FuncRef
 var activation_dfunction: FuncRef
 
 var fitness: float = 0.0
-
 var color: Color = Color(-1, -1, -1)
-
 var raycasts: Array
 
 func _init(_input_nodes: int, _hidden_nodes: int, _output_nodes: int) -> void:
