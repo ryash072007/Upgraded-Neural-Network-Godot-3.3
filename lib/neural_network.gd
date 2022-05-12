@@ -144,6 +144,9 @@ static func mutate_funcref(value, _row, _col):
 func set_raycasts(_raycasts: Array):
 	raycasts = _raycasts
 
+func add_raycast(_raycast):
+	raycasts.append(_raycast)
+
 func get_inputs_from_raycasts() -> Array:
 	
 	var _input_array: Array
@@ -153,9 +156,9 @@ func get_inputs_from_raycasts() -> Array:
 	
 	return _input_array
 
-func get_prediction_from_raycasts(optional_val: Array) -> Array:
+func get_prediction_from_raycasts(optional_val: Array = []) -> Array:
 	var _array_ = get_inputs_from_raycasts()
-	if optional_val: _array_.append_array(optional_val)
+	if optional_val == []: _array_.append_array(optional_val)
 	return predict(_array_)
 
 func get_distance(_raycast: RayCast2D):

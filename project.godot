@@ -33,6 +33,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Upgraded AI Project - 3.3"
+run/main_scene="res://scenes/main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
